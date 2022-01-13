@@ -1,0 +1,22 @@
+{
+  "name": "deptrac",
+  "type": "php-file",
+  "url": "src/deptrac.php",
+  "api-version": "1.0.0",
+  "requirements": {
+    "php": {
+      "php": "^7.3 || ^8.0"
+    },
+    "tool": {
+      "deptrac": {
+        "constraints": "^0.19",
+        "sources": [
+          {
+            "type": "github",
+            "repository": "qossmic/deptrac"
+          }
+        ]
+      }
+    }
+  }
+}
