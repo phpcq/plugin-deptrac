@@ -48,7 +48,6 @@ return new class implements DiagnosticsPluginInterface {
         $projectRoot = $environment->getProjectConfiguration()->getProjectRootPath();
         $outputFile  = $environment->getUniqueTempFile($this, 'report.json');
         $arguments   = [
-            'vendor/bin/deptrac',
             'analyse',
             '--no-progress',
             '--formatter=json',
@@ -154,6 +153,11 @@ return new class implements DiagnosticsPluginInterface {
                             ->addAttachment('report.json')
                             ->fromFile($this->tempFile)
                             ->setMimeType('text/json');
+
+                        if (!file_exists($this->tempFile)) {
+                            $this->report->close(TaskReportInterface::STATUS_FAILED);
+                            return;
+                        }
 
                         $report = json_decode(file_get_contents($this->tempFile), true);
                         if (!is_array($report)) {
