@@ -27,7 +27,7 @@ final class DeptracPluginTest extends TestCase
 
     public function testPluginDescribesConfig(): void
     {
-        $configOptionsBuilder = $this->getMockForAbstractClass(PluginConfigurationBuilderInterface::class);
+        $configOptionsBuilder = $this->createMock(PluginConfigurationBuilderInterface::class);
 
         $this->instantiate()->describeConfiguration($configOptionsBuilder);
 
@@ -37,8 +37,8 @@ final class DeptracPluginTest extends TestCase
 
     public function testPluginCreatesDiagnosticTasks(): void
     {
-        $config = $this->getMockForAbstractClass(PluginConfigurationInterface::class);
-        $environment = $this->getMockForAbstractClass(EnvironmentInterface::class);
+        $config = $this->createMock(PluginConfigurationInterface::class);
+        $environment = $this->createMock(EnvironmentInterface::class);
 
         $this->instantiate()->createDiagnosticTasks($config, $environment);
 
