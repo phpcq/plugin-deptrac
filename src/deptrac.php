@@ -20,7 +20,7 @@ return new class implements DiagnosticsPluginInterface {
     public function describeConfiguration(PluginConfigurationBuilderInterface $configOptionsBuilder): void
     {
         $configOptionsBuilder
-            ->describeStringOption('config-file', 'Path to the config file (Default deptrac.yaml)');
+            ->describeStringOption('config-file', 'Path to the config file (Default deptrac.yaml or deptrac.php)');
 
         $configOptionsBuilder->describeStringOption('cache-file', 'Path to the cache file');
 
@@ -48,6 +48,7 @@ return new class implements DiagnosticsPluginInterface {
         $projectRoot = $environment->getProjectConfiguration()->getProjectRootPath();
         $outputFile  = $environment->getUniqueTempFile($this, 'report.json');
         $arguments   = [
+            $environment->getInstalledDir() . '/vendor/bin/deptrac',
             'analyse',
             '--no-progress',
             '--formatter=json',
@@ -79,7 +80,7 @@ return new class implements DiagnosticsPluginInterface {
         }
 
         yield $environment->getTaskFactory()
-            ->buildRunPhar('deptrac', $arguments)
+            ->buildPhpProcess('deptrac', $arguments)
             ->withWorkingDirectory($projectRoot)
             ->withOutputTransformer($this->createOutputTransformer($projectRoot, $outputFile))
             ->build();

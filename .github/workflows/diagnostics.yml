@@ -17,17 +17,17 @@ jobs:
       matrix:
         include:
           - php: 8.3
-            output: '-o default'
+            output: '-o github-action -o default'
             phpcq_install: 'update'
           - php: 8.4
-            output: '-o default'
+            output: '-o github-action -o default'
             phpcq_install: 'update'
           - php: 8.5
-            output: '-o default'
+            output: '-o github-action -o default'
             phpcq_install: 'update'
     steps:
       - name: Pull source
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
 
       - name: Setup PHP with PECL extension
         uses: shivammathur/setup-php@v2
@@ -35,7 +35,7 @@ jobs:
           php-version: ${{ matrix.php }}
 
       - name: Cache composer cache directory
-        uses: actions/cache@v1
+        uses: actions/cache@v6
         env:
           cache-name: composer-cache-dir-${{ matrix.php }}
         with:
@@ -43,7 +43,7 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}
 
       - name: Cache vendor directory
-        uses: actions/cache@v1
+        uses: actions/cache@v6
         env:
           cache-name: vendor-${{ matrix.php }}
         with:
@@ -53,7 +53,7 @@ jobs:
             ${{ runner.os }}-build-${{ env.cache-name }}-
 
       - name: Cache phpcq directory
-        uses: actions/cache@v1
+        uses: actions/cache@v6
         env:
           cache-name: phpcq-${{ matrix.php }}
         with:
@@ -65,9 +65,6 @@ jobs:
       - name: Install composer dependencies
         run: composer install
 
-      - name: Update phpcq
-        run: ./vendor/bin/phpcq self-update
-
       - name: Install phpcq toolchain
         run: ./vendor/bin/phpcq ${{ matrix.phpcq_install }} -v
 
@@ -75,8 +72,8 @@ jobs:
         run: ./vendor/bin/phpcq run -v ${{ matrix.output }}
 
       - name: Upload build directory to artifact
-        uses: actions/upload-artifact@v2
-        if: ${{ success() }} || ${{ failure() }}
+        uses: actions/upload-artifact@v7
+        if: ${{ success() || failure() }}
         with:
           name: phpcq-builds-php-${{ matrix.php }}
           path: .phpcq/build/
